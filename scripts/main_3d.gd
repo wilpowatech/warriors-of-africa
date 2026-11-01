@@ -87,47 +87,102 @@ func _create_environment() -> void:
 
 
 func _create_arena() -> void:
-	# Fighting floor
+	# Main raised stone fighting platform
 	var floor_body := StaticBody3D.new()
 	floor_body.name = "ArenaFloor"
 	add_child(floor_body)
 
 	var floor_mesh := MeshInstance3D.new()
 	var floor_shape := BoxMesh.new()
-	floor_shape.size = Vector3(15.0, 0.35, 7.0)
+	floor_shape.size = Vector3(16.0, 0.4, 8.0)
 	floor_mesh.mesh = floor_shape
-	floor_mesh.position.y = -0.175
-	floor_mesh.material_override = _material(Color(0.34, 0.25, 0.17))
+	floor_mesh.position.y = -0.2
+	floor_mesh.material_override = _material(Color(0.36, 0.27, 0.19))
 	floor_body.add_child(floor_mesh)
 
 	var floor_collision := CollisionShape3D.new()
 	var floor_box := BoxShape3D.new()
-	floor_box.size = Vector3(15.0, 0.35, 7.0)
+	floor_box.size = Vector3(16.0, 0.4, 8.0)
 	floor_collision.shape = floor_box
-	floor_collision.position.y = -0.175
+	floor_collision.position.y = -0.2
 	floor_body.add_child(floor_collision)
 
-	# Arena boundary walls
-	_add_box(self, "BackWall", Vector3(15.0, 5.0, 0.35),
-		Vector3(0.0, 2.5, -3.8), Color(0.22, 0.16, 0.12))
+	# Dark stone platform sides
+	_add_box(self, "PlatformFront", Vector3(16.2, 0.45, 0.18),
+		Vector3(0.0, -0.42, 4.0), Color(0.16, 0.11, 0.09))
+	_add_box(self, "PlatformBack", Vector3(16.2, 0.45, 0.18),
+		Vector3(0.0, -0.42, -4.0), Color(0.16, 0.11, 0.09))
+	_add_box(self, "PlatformLeft", Vector3(0.18, 0.45, 8.0),
+		Vector3(-8.0, -0.42, 0.0), Color(0.16, 0.11, 0.09))
+	_add_box(self, "PlatformRight", Vector3(0.18, 0.45, 8.0),
+		Vector3(8.0, -0.42, 0.0), Color(0.16, 0.11, 0.09))
 
-	# Stone pillars
-	for x in [-6.2, -3.5, 3.5, 6.2]:
-		_add_box(self, "StonePillar", Vector3(0.65, 3.5, 0.65),
-			Vector3(x, 1.75, -2.7), Color(0.48, 0.37, 0.25))
+	# Gold geometric floor borders
+	var gold := Color(0.78, 0.54, 0.25)
+	_add_box(self, "FrontGoldBorder", Vector3(15.4, 0.025, 0.07),
+		Vector3(0.0, 0.015, 3.55), gold)
+	_add_box(self, "BackGoldBorder", Vector3(15.4, 0.025, 0.07),
+		Vector3(0.0, 0.015, -3.55), gold)
+	_add_box(self, "LeftGoldBorder", Vector3(0.07, 0.025, 7.1),
+		Vector3(-7.65, 0.015, 0.0), gold)
+	_add_box(self, "RightGoldBorder", Vector3(0.07, 0.025, 7.1),
+		Vector3(7.65, 0.015, 0.0), gold)
 
-		_add_box(self, "PillarCap", Vector3(0.9, 0.25, 0.9),
-			Vector3(x, 3.55, -2.7), Color(0.66, 0.47, 0.25))
+	# Central arena emblem
+	_add_box(self, "EmblemHorizontal", Vector3(1.8, 0.025, 0.07),
+		Vector3(0.0, 0.025, 0.0), gold)
+	_add_box(self, "EmblemVertical", Vector3(0.07, 0.025, 1.8),
+		Vector3(0.0, 0.025, 0.0), gold)
+	var diagonal_a := _add_box(self, "EmblemDiagonalA",
+		Vector3(1.25, 0.025, 0.07), Vector3(0.0, 0.03, 0.0), gold)
+	diagonal_a.rotation_degrees.y = 45.0
+	var diagonal_b := _add_box(self, "EmblemDiagonalB",
+		Vector3(1.25, 0.025, 0.07), Vector3(0.0, 0.03, 0.0), gold)
+	diagonal_b.rotation_degrees.y = -45.0
 
-	# Decorative arena banners
-	for x in [-4.8, 4.8]:
-		_add_box(self, "WarriorBanner", Vector3(1.0, 1.8, 0.08),
-			Vector3(x, 2.55, -2.25), Color(0.48, 0.12, 0.07))
+	# Rear architectural wall and framing
+	_add_box(self, "RearFoundation", Vector3(16.0, 0.55, 0.7),
+		Vector3(0.0, 0.25, -4.65), Color(0.22, 0.15, 0.11))
+	_add_box(self, "RearWall", Vector3(16.0, 4.5, 0.35),
+		Vector3(0.0, 2.5, -6.2), Color(0.25, 0.17, 0.12))
+	_add_box(self, "RearTopBeam", Vector3(16.4, 0.35, 0.65),
+		Vector3(0.0, 4.85, -6.0), Color(0.49, 0.34, 0.20))
 
-	# Arena markings
-	_add_box(self, "CentreMarking", Vector3(0.08, 0.015, 5.0),
-		Vector3(0.0, 0.008, 0.0), Color(0.85, 0.62, 0.29))
+	# Stone columns, bases, caps and decorative bands
+	for x in [-7.0, -4.7, -2.35, 0.0, 2.35, 4.7, 7.0]:
+		_add_box(self, "ArenaColumn", Vector3(0.48, 3.6, 0.55),
+			Vector3(x, 2.0, -5.65), Color(0.47, 0.35, 0.24))
+		_add_box(self, "ColumnBase", Vector3(0.72, 0.28, 0.78),
+			Vector3(x, 0.32, -5.65), Color(0.63, 0.45, 0.27))
+		_add_box(self, "ColumnCap", Vector3(0.78, 0.28, 0.82),
+			Vector3(x, 3.85, -5.65), Color(0.68, 0.49, 0.29))
+		_add_box(self, "ColumnBand", Vector3(0.53, 0.12, 0.61),
+			Vector3(x, 2.7, -5.65), gold)
 
+	# Tiered spectator stands behind the fighting platform
+	for row in range(3):
+		var row_z := -4.95 - float(row) * 0.78
+		var row_y := 0.65 + float(row) * 0.42
+		_add_box(self, "SpectatorTier", Vector3(12.8, 0.32, 0.68),
+			Vector3(0.0, row_y, row_z), Color(0.31, 0.21, 0.15))
+		_add_box(self, "TierFrontTrim", Vector3(12.9, 0.07, 0.08),
+			Vector3(0.0, row_y - 0.12, row_z + 0.32), gold)
+
+	# Decorative banners with geometric patterns
+	for x in [-5.8, -3.8, 3.8, 5.8]:
+		_add_box(self, "WarriorBanner", Vector3(0.9, 1.5, 0.08),
+			Vector3(x, 2.65, -5.30), Color(0.43, 0.10, 0.065))
+		_add_box(self, "BannerPattern", Vector3(0.12, 0.8, 0.10),
+			Vector3(x, 2.65, -5.22), gold)
+		_add_box(self, "BannerCrossPattern", Vector3(0.52, 0.10, 0.10),
+			Vector3(x, 2.65, -5.21), gold)
+
+	# Side architectural pillars
+	for x in [-8.0, 8.0]:
+		_add_box(self, "SidePillar", Vector3(0.5, 3.0, 0.5),
+			Vector3(x, 1.5, -2.9), Color(0.43, 0.31, 0.21))
+		_add_box(self, "SidePillarCap", Vector3(0.75, 0.22, 0.75),
+			Vector3(x, 3.05, -2.9), gold)
 
 func _create_camera() -> void:
 	var camera := Camera3D.new()
